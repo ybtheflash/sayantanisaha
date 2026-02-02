@@ -1,0 +1,1 @@
+{"root":["./src/main.ts","./src/vite-env.d.ts","./src/app.vue","./src/components/floatingwords.vue","./src/components/gallerysection.vue","./src/components/heartloader.vue","./src/components/helloworld.vue","./src/components/herosection.vue","./src/components/textsection.vue","./src/components/thefooter.vue"],"version":"5.9.3"}
