@@ -1,6 +1,6 @@
 :root {
-  --color-bg: #E6E6FA;
-  /* Lavender */
+  --color-bg: #3a1f4a;
+  /* Deep Purple */
   --color-text: #FFFFFF;
   --font-cursive: 'Corinthia', cursive;
   --font-body: 'Inter', sans-serif;
@@ -15,8 +15,8 @@
 body {
   background-color: var(--color-bg);
   background-image: url('/tulip_bg.svg');
-  background-size: 200px;
-  /* Adjust size to make it "gapped" and polka dot-like */
+  background-size: 150px;
+  /* Smaller for more polka-dot like spread */
   background-repeat: repeat;
   background-attachment: fixed;
   color: var(--color-text);

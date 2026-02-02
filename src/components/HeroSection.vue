@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Using a high-quality image from the gallery as the DP
-const dpImage = '/_sayantani_saha_/_sayantani_saha__1666949566_2958909880436209963_8209875293.webp'
+const dpImage = '/dp.jpg'
 </script>
 
 <template>

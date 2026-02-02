@@ -5,7 +5,7 @@
 <template>
   <footer class="footer">
     <div class="footer-content">
-      <p class="love-note">With Love (ATOTAAAAAA) by Her One and Only, Yubaraj.</p>
+      <p class="love-note">With Love &lt;3 (ATOTAAAAAA) by Her One and Only, Yubaraj.</p>
       <p class="sub-note">ts pmo icl or not in 2026?</p>
     </div>
   </footer>
@@ -20,8 +20,9 @@
 }
 
 .love-note {
-  font-family: var(--font-cursive);
-  font-size: 3rem;
+  font-family: var(--font-body); /* Normal font */
+  font-size: 1.8rem;
+  font-weight: 400;
   margin-bottom: 1rem;
   color: white;
 }

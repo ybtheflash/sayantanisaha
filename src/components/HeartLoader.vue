@@ -47,7 +47,7 @@ onMounted(() => {
 }
 
 .heart-icon {
-  width: 250px; /* Increased from 100px */
+  width: 400px; /* Much larger */
   height: auto;
   animation: heartbeat 1.5s infinite ease-in-out;
 }

@@ -8,77 +8,71 @@ const words = [
   "Tataaaa", "?", "Oooo"
 ]
 
-// Generate random styles for each word
+// Generate random styles for each word - spread across the box, SLOWER animation
 const wordItems = ref(words.map((text, index) => ({
   id: index,
   text,
   style: {
-    top: `${Math.random() * 80 + 10}%`,
-    left: `${Math.random() * 80 + 10}%`,
+    top: `${10 + Math.random() * 80}%`,
+    left: `${5 + Math.random() * 90}%`,
     animationDelay: `${Math.random() * 5}s`,
-    animationDuration: `${3 + Math.random() * 4}s`,
-    transform: `rotate(${Math.random() * 40 - 20}deg)`,
-    fontSize: `${1 + Math.random() * 1.5}rem`
+    animationDuration: `${4 + Math.random() * 4}s`, /* Slower: 4s to 8s */
+    transform: `rotate(${Math.random() * 20 - 10}deg)`,
+    fontSize: `${1 + Math.random() * 0.5}rem`
   }
 })))
 
 </script>
 
 <template>
-  <section class="floating-words-container">
-    <div 
-      v-for="item in wordItems" 
-      :key="item.id" 
-      class="floating-word"
-      :style="item.style"
-    >
-      {{ item.text }}
-    </div>
+  <section class="floating-words-wrapper">
+     <div class="dark-box">
+       <div 
+        v-for="item in wordItems" 
+        :key="item.id" 
+        class="floating-word"
+        :style="item.style"
+      >
+        {{ item.text }}
+      </div>
+     </div>
   </section>
 </template>
 
 <style scoped>
-.floating-words-container {
+.floating-words-wrapper {
+  width: 100%;
+  padding: 4rem 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.dark-box {
   position: relative;
   width: 100%;
-  height: 80vh; /* Takes up a good chunk of screen */
+  max-width: 900px;
+  height: 350px;
+  background: rgba(20, 5, 30, 0.9);
+  border-radius: 20px;
   overflow: hidden;
-  /* Soft blurry background zone suggestion */
-  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 
 .floating-word {
   position: absolute;
-  font-family: var(--font-cursive); /* Or body font, user didn't specify but "random words" fits handwriting */
-  color: white; /* or slight off-white */
+  font-family: var(--font-body); /* Normal font, not cursive */
+  font-weight: 400;
+  color: #fff;
   opacity: 0;
   white-space: nowrap;
-  animation: floatFade infinite ease-in-out;
-  text-shadow: 0 0 5px rgba(255,255,255,0.5);
-  filter: blur(0.5px);
+  animation: slowFade infinite ease-in-out;
+  text-shadow: 0 2px 10px rgba(255,255,255,0.4);
 }
 
-@keyframes floatFade {
-  0% {
-    opacity: 0;
-    transform: translateY(10px) scale(0.9);
-    filter: blur(4px);
-  }
-  20% {
-    opacity: 0.8;
-    filter: blur(0px);
-  }
-  50% {
-    transform: translateY(-10px) scale(1.1);
-  }
-  80% {
-    opacity: 0.8;
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-20px) scale(1);
-    filter: blur(4px);
-  }
+@keyframes slowFade {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
 }
 </style>

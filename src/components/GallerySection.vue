@@ -11,18 +11,18 @@ const extractUrls = (modules: Record<string, string>) => {
 const galleryImages = ref<string[]>(extractUrls(galleryImagesModules))
 const whiteBorderedImages = ref<string[]>(extractUrls(whiteBorderedImagesModules))
 
+// Duplicate for seamless loop
+const allImages = ref([...galleryImages.value, ...galleryImages.value])
+
 const scrollContainer = ref<HTMLElement | null>(null)
 let animationId: number | null = null
 let isPaused = false
 
 const startAutoScroll = () => {
-  const scrollSpeed = 1; // Pixels per frame (adjust for speed)
-  
+  const scrollSpeed = 0.6;
   const animate = () => {
     if (scrollContainer.value && !isPaused) {
-      if (scrollContainer.value.scrollLeft >= (scrollContainer.value.scrollWidth - scrollContainer.value.clientWidth)) {
-        // Reset to start for infinite feel (rough loop, better with duplicated content but simple is safer for native scroll)
-        // For truly seamless, we can duplicate content, but let's try simple rewind or just partial duplicate
+      if (scrollContainer.value.scrollLeft >= (scrollContainer.value.scrollWidth / 2)) {
         scrollContainer.value.scrollLeft = 0; 
       } else {
         scrollContainer.value.scrollLeft += scrollSpeed;
@@ -48,8 +48,7 @@ const resumeScroll = () => { isPaused = false }
 
 <template>
   <div class="gallery-wrapper">
-    <!-- Horizontal Scrolling Section -->
-    <!-- Added event listeners to pause on interaction -->
+    <!-- Masonry Scrolling Section -->
     <section 
       class="scroll-container" 
       ref="scrollContainer"
@@ -58,21 +57,9 @@ const resumeScroll = () => { isPaused = false }
       @mouseenter="pauseScroll"
       @mouseleave="resumeScroll"
     >
-      <div class="scroll-track">
-        <!-- Duplicate main list once to help with longer scrolling before reset -->
-        <div 
-          v-for="(img, index) in galleryImages" 
-          :key="'scroll-1-'+index" 
-          class="scroll-item"
-        >
-          <img :src="img" loading="lazy" class="scroll-img" />
-        </div>
-        <div 
-          v-for="(img, index) in galleryImages" 
-          :key="'scroll-2-'+index" 
-          class="scroll-item"
-        >
-          <img :src="img" loading="lazy" class="scroll-img" />
+      <div class="masonry-scroll">
+        <div v-for="(img, index) in allImages" :key="'m-'+index" class="masonry-item">
+          <img :src="img" loading="lazy" />
         </div>
       </div>
     </section>
@@ -103,43 +90,58 @@ const resumeScroll = () => { isPaused = false }
 .gallery-wrapper {
   width: 100%;
   padding-bottom: 4rem;
+  overflow: hidden;
 }
 
 .scroll-container {
   width: 100%;
+  height: 650px; /* Fixed viewport height */
   overflow-x: auto;
-  white-space: nowrap;
-  padding: 2rem 0;
-  -webkit-overflow-scrolling: touch; /* Momentum scroll */
-  scrollbar-width: none; 
-  cursor: grab;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
 
 .scroll-container::-webkit-scrollbar {
   display: none;
 }
 
-.scroll-track {
-  display: inline-flex;
-  gap: 1rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
+.masonry-scroll {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  height: 100%;
+  gap: 6px;
+  padding: 6px;
+  width: max-content;
+  align-content: flex-start;
 }
 
-.scroll-item {
+.masonry-item {
   flex: 0 0 auto;
-  width: 300px;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  display: inline-block;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-.scroll-img {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
+.masonry-item img {
+  height: 200px; /* Base height, width auto for natural aspect ratio */
+  width: auto;
   display: block;
+  object-fit: cover;
+}
+
+/* Vary heights for masonry effect */
+.masonry-item:nth-child(3n) img {
+  height: 220px;
+}
+
+.masonry-item:nth-child(5n) img {
+  height: 180px;
+}
+
+.masonry-item:nth-child(7n) img {
+  height: 240px;
 }
 
 .name-split {
@@ -184,11 +186,17 @@ const resumeScroll = () => { isPaused = false }
 }
 
 @media (max-width: 768px) {
-  .scroll-item {
-    width: 250px;
+  .scroll-container {
+    height: 500px;
   }
-  .scroll-img {
-    height: 350px;
+  .masonry-item img {
+    height: 150px;
+  }
+  .masonry-item:nth-child(3n) img {
+    height: 170px;
+  }
+  .masonry-item:nth-child(5n) img {
+    height: 130px;
   }
   .name-split h2 {
     font-size: 4rem;
