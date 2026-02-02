@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const galleryImagesModules = import.meta.glob('/public/_sayantani_saha_/*.{jpg,jpeg,png,webp,heic}', { eager: true, as: 'url' })
 const whiteBorderedImagesModules = import.meta.glob('/public/white_bordered/*.{jpg,jpeg,png,webp,heic}', { eager: true, as: 'url' })
@@ -11,19 +11,65 @@ const extractUrls = (modules: Record<string, string>) => {
 const galleryImages = ref<string[]>(extractUrls(galleryImagesModules))
 const whiteBorderedImages = ref<string[]>(extractUrls(whiteBorderedImagesModules))
 
-// Combine or keep separate? User said "many pix" scrolling.
-// Let's scroll the main gallery. For smooth infinite scroll we often duplicate the list.
-const scrollImages = ref([...galleryImages.value, ...galleryImages.value]) 
+const scrollContainer = ref<HTMLElement | null>(null)
+let animationId: number | null = null
+let isPaused = false
+
+const startAutoScroll = () => {
+  const scrollSpeed = 1; // Pixels per frame (adjust for speed)
+  
+  const animate = () => {
+    if (scrollContainer.value && !isPaused) {
+      if (scrollContainer.value.scrollLeft >= (scrollContainer.value.scrollWidth - scrollContainer.value.clientWidth)) {
+        // Reset to start for infinite feel (rough loop, better with duplicated content but simple is safer for native scroll)
+        // For truly seamless, we can duplicate content, but let's try simple rewind or just partial duplicate
+        scrollContainer.value.scrollLeft = 0; 
+      } else {
+        scrollContainer.value.scrollLeft += scrollSpeed;
+      }
+    }
+    animationId = requestAnimationFrame(animate)
+  }
+  animationId = requestAnimationFrame(animate)
+}
+
+onMounted(() => {
+  startAutoScroll()
+})
+
+onUnmounted(() => {
+  if (animationId) cancelAnimationFrame(animationId)
+})
+
+const pauseScroll = () => { isPaused = true }
+const resumeScroll = () => { isPaused = false }
+
 </script>
 
 <template>
   <div class="gallery-wrapper">
     <!-- Horizontal Scrolling Section -->
-    <section class="scroll-container">
+    <!-- Added event listeners to pause on interaction -->
+    <section 
+      class="scroll-container" 
+      ref="scrollContainer"
+      @touchstart="pauseScroll"
+      @touchend="resumeScroll"
+      @mouseenter="pauseScroll"
+      @mouseleave="resumeScroll"
+    >
       <div class="scroll-track">
+        <!-- Duplicate main list once to help with longer scrolling before reset -->
         <div 
-          v-for="(img, index) in scrollImages" 
-          :key="'scroll-'+index" 
+          v-for="(img, index) in galleryImages" 
+          :key="'scroll-1-'+index" 
+          class="scroll-item"
+        >
+          <img :src="img" loading="lazy" class="scroll-img" />
+        </div>
+        <div 
+          v-for="(img, index) in galleryImages" 
+          :key="'scroll-2-'+index" 
           class="scroll-item"
         >
           <img :src="img" loading="lazy" class="scroll-img" />
@@ -36,13 +82,7 @@ const scrollImages = ref([...galleryImages.value, ...galleryImages.value])
       <h2>This is Sayantani Saha</h2>
     </div>
 
-    <!-- White Bordered Gallery (Keep as grid or unique layout? User asked for 'all' to scroll, maybe keep this special) -->
-    <!-- Applying scroll effect here too for consistency if requested, but grid looks nice for 1:1. -->
-    <!-- User said "show all pics like a gallery... then keep a space... then keep her name" -->
-    <!-- I will keep the white bordered ones as a grid or secondary scroll? -->
-    <!-- "scroll down and write... baddie... below show all pics" -->
-    <!-- I'll keep the white-bordered special grid as a feature, assuming "all pics" referred to the bulk folder -->
-    
+    <!-- White Bordered Gallery -->
     <section class="gallery-section white-bordered-gallery" v-if="whiteBorderedImages.length > 0">
       <div class="instagram-grid">
          <div 
@@ -63,53 +103,43 @@ const scrollImages = ref([...galleryImages.value, ...galleryImages.value])
 .gallery-wrapper {
   width: 100%;
   padding-bottom: 4rem;
-  overflow: hidden; /* Hide scrollbar for the page, track handles internal overflow */
 }
 
-/* Horizontal Auto-Scroll Logic */
 .scroll-container {
   width: 100%;
-  overflow-x: auto; /* Allow touch swipe */
+  overflow-x: auto;
+  white-space: nowrap;
   padding: 2rem 0;
-  -webkit-overflow-scrolling: touch;
-  /* Hide scrollbar */
+  -webkit-overflow-scrolling: touch; /* Momentum scroll */
   scrollbar-width: none; 
+  cursor: grab;
 }
+
 .scroll-container::-webkit-scrollbar {
   display: none;
 }
 
 .scroll-track {
-  display: flex;
+  display: inline-flex;
   gap: 1rem;
-  width: max-content; /* Ensure it fits all content */
-  animation: scrollLeft 60s linear infinite; /* Adjust speed as needed */
   padding-left: 2rem;
-}
-
-/* Pause on hover/touch to let user swipe manually */
-.scroll-track:hover, .scroll-track:active {
-  animation-play-state: paused;
+  padding-right: 2rem;
 }
 
 .scroll-item {
   flex: 0 0 auto;
-  width: 300px; /* Fixed width for consistency */
+  width: 300px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  display: inline-block;
 }
 
 .scroll-img {
   width: 100%;
-  height: 400px; /* Fixed height for uniform strip */
+  height: 400px;
   object-fit: cover;
   display: block;
-}
-
-@keyframes scrollLeft {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); } /* Move half way because list is doubled */
 }
 
 .name-split {
@@ -123,7 +153,6 @@ const scrollImages = ref([...galleryImages.value, ...galleryImages.value])
   color: var(--color-text);
 }
 
-/* White Bordered Grid */
 .instagram-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -164,7 +193,5 @@ const scrollImages = ref([...galleryImages.value, ...galleryImages.value])
   .name-split h2 {
     font-size: 4rem;
   }
-  
-  /* On mobile, maybe slow down animation or rely more on swipe */
 }
 </style>
