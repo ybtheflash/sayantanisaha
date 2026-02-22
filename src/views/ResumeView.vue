@@ -6,6 +6,7 @@ type Theme = 'color' | 'dark'
 const currentTheme = ref<Theme>('color')
 const isThemeDropdownOpen = ref(false)
 const isLoading = ref(true)
+const isPhotoModalOpen = ref(false)
 
 const applyTheme = (theme: Theme) => {
   document.documentElement.setAttribute('data-theme', theme)
@@ -61,12 +62,21 @@ const skills = [
     </div>
   </transition>
 
+  <transition name="fade">
+    <div v-if="isPhotoModalOpen" class="photo-modal" @click="isPhotoModalOpen = false">
+      <button class="close-btn" @click.stop="isPhotoModalOpen = false" aria-label="Close">
+         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <img src="/dp.jpg" alt="Sayantani Saha" class="modal-image" @click.stop="isPhotoModalOpen = false" />
+    </div>
+  </transition>
+
   <div class="resume-wrapper">
     <div class="resume-card">
       
       <!-- Header Area -->
       <div class="header-section">
-        <img src="/dp.jpg" alt="Sayantani Saha" class="avatar" />
+        <img src="/dp.jpg" alt="Sayantani Saha" class="avatar" @click="isPhotoModalOpen = true" />
         <div class="header-info">
           <p class="role-text">Looking for <strong>SDE I</strong> or <strong>QEA role</strong>.</p>
           <h1 class="name">Sayantani Saha <span class="pronouns">(She / Her)</span></h1>
@@ -167,7 +177,7 @@ const skills = [
           </li>
           <li>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-            <a href="https://www.linkedin.com/in/sayantani-saha-150aa2251/">LinkedIn</a>
+            <a href="https://www.linkedin.com/in/sayantani-saha-/">LinkedIn</a>
           </li>
           <li>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
@@ -268,6 +278,12 @@ const skills = [
   object-fit: cover;
   flex-shrink: 0;
   box-shadow: var(--card-shadow);
+  cursor: zoom-in;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.avatar:hover {
+  transform: scale(1.05);
+  box-shadow: var(--card-shadow), 0 0 15px rgba(255,255,255,0.2);
 }
 .header-info {
   display: flex;
@@ -683,6 +699,59 @@ const skills = [
   width: 300px;
   height: auto;
   animation: breathe 1.5s infinite ease-in-out;
+}
+
+/* Photo Modal */
+.photo-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: zoom-out;
+}
+
+.modal-image {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  z-index: 10001;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.close-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
 @keyframes breathe {
