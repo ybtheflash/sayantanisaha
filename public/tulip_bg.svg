@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg id="svg" version="1.1" width="1000" height="2000" viewBox="-500 -500 1500 2500" xmlns="http://www.w3.org/2000/svg">
+<svg id="svg" version="1.1" width="1000" height="2000" viewBox="-100 -400 800 3000" xmlns="http://www.w3.org/2000/svg">
   <!-- 
        Modifications:
        1. viewBox enlarged to create "gap" around the tulip for the pattern.

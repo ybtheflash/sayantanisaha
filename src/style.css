@@ -1,9 +1,61 @@
 :root {
-  --color-bg: #3a1f4a;
-  /* Deep Purple */
-  --color-text: #FFFFFF;
+  /* Variables for Old View */
+  --old-bg: #3a1f4a;
+  --old-text: #FFFFFF;
   --font-cursive: 'Corinthia', cursive;
+
+  /* Variables for Resume View */
   --font-body: 'Inter', sans-serif;
+
+  /* Resume Dark Theme Details (default) */
+  --page-bg: #0a0a0a;
+  --card-bg: #171717;
+  --border-color: #262626;
+  --text-primary: #f5f5f5;
+  --text-secondary: #a3a3a3;
+  --text-muted: #525252;
+  --btn-bg: #ffffff;
+  --btn-text: #000000;
+  --tag-bg: #262626;
+  --tag-text: #d4d4d4;
+  --tag-bg-hover: #404040;
+  --bg-opacity: 0.3;
+  --tulip-color: #ffffff;
+  --card-shadow: none;
+  --link-hover: #60a5fa;
+  --logo-bg: rgba(255, 255, 255, 0.9);
+  --logo-pad: 0.5rem;
+  --logo-radius: 8px;
+  --opentowork-color: #00FF41;
+  /* Matrix green */
+}
+
+:root[data-theme="color"] {
+  /* Resume Color Theme - Sky Blue / Baby Pink (No flashbang) */
+  --page-bg: #e0f2fe;
+  /* Light sky blue */
+  --card-bg: #f0f9ff;
+  /* Even lighter sky blue for contrast but not white */
+  --border-color: #bae6fd;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --btn-bg: #f472b6;
+  /* Baby pink accent */
+  --btn-text: #ffffff;
+  --tag-bg: #bae6fd;
+  --tag-text: #0f172a;
+  --tag-bg-hover: #7dd3fc;
+  --bg-opacity: 0.85;
+  --tulip-color: #ec4899;
+  /* deeper pink for visibility */
+  --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  --link-hover: #0284c7;
+  --logo-bg: transparent;
+  /* Strictly no bg */
+  --logo-pad: 0;
+  --opentowork-color: #166534;
+  /* Deeper forest green for light skies */
 }
 
 * {
@@ -13,27 +65,12 @@
 }
 
 body {
-  background-color: var(--color-bg);
-  background-image: url('/tulip_bg.svg');
-  background-size: 150px;
-  /* Smaller for more polka-dot like spread */
-  background-repeat: repeat;
-  background-attachment: fixed;
-  color: var(--color-text);
   font-family: var(--font-body);
   overflow-x: hidden;
   width: 100vw;
   min-height: 100vh;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-cursive);
-  font-weight: 700;
+  background-color: var(--page-bg);
+  color: var(--text-primary);
 }
 
 #app {
